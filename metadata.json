@@ -1,0 +1,8 @@
+{
+  "name": "AutoDoc AI",
+  "description": "Intelligent Technical Documentation Hub that automatically generates documentation, architecture diagrams, and security audits from your codebase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

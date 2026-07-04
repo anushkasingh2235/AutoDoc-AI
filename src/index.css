@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-background: #0a0a12;
+  --color-foreground: #f8fafc;
+  --color-card: #12121e;
+  --color-card-foreground: #f8fafc;
+  --color-popover: #12121e;
+  --color-popover-foreground: #f8fafc;
+  --color-primary: #38bdf8;
+  --color-primary-foreground: #082f49;
+  --color-secondary: #818cf8;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #1e1e2e;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #f472b6;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #2d2d3d;
+  --color-input: #2d2d3d;
+  --color-ring: #38bdf8;
+
+  --radius-sm: 0.4rem;
+  --radius-md: 0.6rem;
+  --radius-lg: 0.8rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/30;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.08) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(244, 114, 182, 0.03) 0px, transparent 50%);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    min-height: 100vh;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a12;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e1e2e;
+    border-radius: 10px;
+    border: 2px solid #0a0a12;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #38bdf8;
+  }
+}
+
+.prose {
+  @apply max-w-none text-muted-foreground;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  @apply text-foreground font-bold tracking-tight mt-8 mb-4;
+}
+
+.prose code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-primary font-mono text-sm;
+}
+
+.prose pre {
+  @apply bg-muted p-4 rounded-lg overflow-x-auto my-4 border border-border/50;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0 text-foreground;
+}
+
+/* Custom Animations */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(-5%); }
+  50% { transform: translateY(0); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
