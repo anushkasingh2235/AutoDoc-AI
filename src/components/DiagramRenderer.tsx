@@ -5,6 +5,20 @@ interface DiagramRendererProps {
   code: string;
 }
 
+function buildFallbackMermaidDiagram(source: string): string {
+  const trimmed = source?.trim() || '';
+  const fallbackLabel = trimmed
+    .split(/\n+/)
+    .map(line => line.trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .slice(0, 80) || 'Diagram unavailable';
+
+  return `flowchart TD\n  A["${fallbackLabel}"]\n  B["Preview"]\n  A --> B`;
+}
+
 function sanitizeMermaidCode(mermaidCode: string): string {
   if (!mermaidCode) return '';
   const lines = mermaidCode.split('\n');
@@ -44,8 +58,8 @@ function sanitizeMermaidCode(mermaidCode: string): string {
       continue;
     }
 
-    if (/^(?:graph|flowchart)\s+[A-Z]{2}/i.test(trimmed)) {
-      sanitizedLines.push(trimmed);
+    if (/^(?:graph|flowchart)\s+/i.test(trimmed)) {
+      sanitizedLines.push(trimmed.replace(/^flowchart\s+/i, 'flowchart '));
       continue;
     }
 
@@ -151,14 +165,22 @@ export const DiagramRenderer: React.FC<DiagramRendererProps> = ({ code }) => {
           
           if (!cleanCode) return;
 
-          // Apply bulletproof sanitization mapping
           const safeMermaidCode = sanitizeMermaidCode(cleanCode);
+          const diagramToRender = safeMermaidCode || buildFallbackMermaidDiagram(cleanCode);
 
           const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-          const { svg } = await mermaid.render(id, safeMermaidCode);
-          
-          if (isMounted && containerRef.current) {
-            containerRef.current.innerHTML = svg;
+          try {
+            await mermaid.parse(diagramToRender);
+            const { svg } = await mermaid.render(id, diagramToRender);
+            if (isMounted && containerRef.current) {
+              containerRef.current.innerHTML = svg;
+            }
+          } catch (parseError) {
+            const fallbackDiagram = buildFallbackMermaidDiagram(cleanCode);
+            const { svg } = await mermaid.render(id, fallbackDiagram);
+            if (isMounted && containerRef.current) {
+              containerRef.current.innerHTML = svg;
+            }
           }
         } catch (err) {
           if (isMounted) {
